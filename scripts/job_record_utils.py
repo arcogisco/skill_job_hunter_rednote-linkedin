@@ -34,6 +34,10 @@ def normalize_text(value: str) -> str:
     return value.strip()
 
 
+def normalize_link(value: str) -> str:
+    return value.strip()
+
+
 def normalize_company(value: str) -> str:
     value = normalize_text(value)
     return COMPANY_ALIASES.get(value, value)
@@ -46,7 +50,10 @@ def normalize_city(value: str) -> str:
 
 def normalize_keywords(value: Any) -> list[str]:
     if isinstance(value, str):
-        parts = re.split(r"[\/|,;]+", value)
+        if any(delimiter in value for delimiter in ["/", "|", ",", ";", "；", "，", "、"]):
+            parts = re.split(r"[\/|,;；，、]+", value)
+        else:
+            parts = re.split(r"\s+", value.strip())
     elif isinstance(value, list):
         parts = [str(item) for item in value]
     else:
@@ -81,10 +88,10 @@ def normalize_job_record(job: dict[str, Any]) -> dict[str, Any]:
 
 def primary_key(job: dict[str, Any]) -> str:
     normalized = normalize_job_record(job)
-    xhs = normalize_text(str(normalized.get("xiaohongshu_link", "")))
+    xhs = normalize_link(str(normalized.get("xiaohongshu_link", "")))
     if xhs:
         return f"xhs:{xhs}"
-    linkedin = normalize_text(str(normalized.get("linkedin_link", "")))
+    linkedin = normalize_link(str(normalized.get("linkedin_link", "")))
     if linkedin:
         return f"li:{linkedin}"
     return ""

@@ -31,10 +31,10 @@ Allow one-to-many matches when a Xiaohongshu clue appears to map to multiple act
 
 Keep a result even if only one source exists, as long as it still has action value.
 
-Mark the missing source explicitly:
+For single-source results:
 
-- Xiaohongshu missing -> `未找到`
-- LinkedIn missing -> `未找到`
+- include only the link line that actually exists
+- do not fabricate or force a missing-source placeholder link line
 
 ## Ranking Priority
 

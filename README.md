@@ -1,123 +1,98 @@
-# XHS + LinkedIn Job Search
+# XHS Job Search 🔎
 
-一个找岗位的 skill，不代投，不外联。🔎
+Search job opportunities on Xiaohongshu and return a structured list you can directly screen.  
+在小红书里捞招聘帖、内推帖和 refer 线索，再整理成可直接筛选的岗位清单。
 
-一句话版：先捞小红书线索，再补 LinkedIn JD，把岗位整理成能直接筛的清单。✨
+## What It Does | 这是做什么的 ✨
 
-最短调用：
+A **job search skill**. It **does not apply**, **does not send emails**, and **does not contact recruiters**.  
+一个**找岗位**的 skill。**不代投，不发邮件，不替用户外联。**
+
+## Core Flow | 核心流程 🚀
+
+**Search XHS → extract structured fields → return clean results**  
+**先搜小红书 → 提取结构化字段 → 输出结果**
+
+提取的信息包括：公司名称、岗位名称、一句话概括、关键词、城市、Refer、邮箱、小红书链接。  
+如果用户明确要求，也可以继续整理成 doc 或写入 Feishu Bitable。
+
+## Quick Start | 快速开始 ⚡
 
 ```text
 用 job-search 帮我找伦敦的 GenAI PM
-```
+用 job-search 帮我找上海的项目经理，并整理到飞书多维表格
+用 job-search 帮我找北京的junior PE岗位，并输出到Feishu
 
-如果还想顺手产出文档，也可以这样说：
+## Best For | 适用场景 🎯
+Explicit skill call: $xhs-job-search 直接调用 skill
+Partial skill name: job-search 只说部分名字
+XHS hiring search: 招聘帖 / 内推帖 / refer 线索
+Clear target: 目标相对明确的岗位搜索
 
-```text
-用 job-search 帮我找伦敦的 GenAI PM，并整理到 Google Doc
-```
+AI Agent PM usually works better than AI PM. AI Agent PM 通常会比 AI PM 更准。
 
-它做的事很简单：
+## Response Language | 回复语言 🌍
+Default: Chinese 默认中文
+English if requested: 用户全英文提问或明确要求英文时切换
+Keep role/company names in English: 岗位名、公司名、关键词保留英文没问题
 
-- 先去小红书找招聘帖、内推帖、refer 线索
-- 再去 LinkedIn 补 JD 链接和标准岗位信息
-- 最后输出一份能直接拿来筛选的岗位清单
-- 如果用户明确要求，也可以顺手产出 doc
+## Output Format | 输出格式 📄
 
-## 什么时候用
+**Structured, clean, and directly scannable**  
+**结构化输出，方便直接筛选**
 
-适合这些场景：
+每条结果统一整理成下面这样：
 
-- 用户明确调用 `$xhs-linkedin-job-search`
-- 用户只说一部分名字，比如 `job-search`
-- 用户明确说要在小红书/领英上找 JD / 招聘帖 / 内推帖
+[公司名称] - [岗位名称]  
+一句话概括：[直接概括这个岗位在招什么]  
+关键词：[关键词1 / 关键词2 / 关键词3]  
+城市：[城市名 / 国家名 / Remote / 未明确]  
+Refer：[可 refer / 未明确 / 无法判断]  
+邮箱：[邮箱地址 / 未提供]  
+小红书链接：[链接 / 未找到]
 
-不适合这种很泛的请求：
+## Notes | 说明 📝
 
-- `帮我找工作`
-- `看看有没有适合我的机会`
+**Honest output only**  
+**如实返回，不编造字段**
 
-## 回复语言
+尽量返回真正能点开的 XHS 链接。  
+如果只是裸的 `explore/<note_id>`，没有签名参数，就不要硬塞进结果里。
 
-- 默认中文
-- 用户全英文提问，或明确要英文时，再用英文
-- 岗位名、公司名、关键词保留英文没问题
+## Optional Output | 可选产出 📦
 
-## 输出长什么样
+**Chat first, docs if requested**  
+**默认对话返回，用户明确要求时再产出文档**
 
-合并成功的岗位可以同时带两条链接；如果本身只来自一个来源，就只返回那一个来源的链接。
+支持的产出形式包括：Google Doc、Feishu Doc、本地文件、Feishu Bitable。  
+当前最稳的集成是 **Feishu Bitable**。
 
-小红书链接要尽量是真正能点开的那种。
-如果只是裸的 `explore/<note_id>`，没有当前网页访问需要的签名参数，就不要硬塞进结果里。⚠️
+## Feishu Bitable | 飞书多维表格 📊
 
-示例：
+**Default target: `job_hunter_rednote / Jobs`**  
+**默认目标：`job_hunter_rednote / Jobs`**
 
-```text
-[公司名称] - [岗位名称]
-一句话概括：[直接概括这个岗位在招什么]
-关键词：[关键词1 / 关键词2 / 关键词3]
-城市：[城市名 / 国家名 / Remote / 未明确]
-Refer：[可 refer / 未明确 / 无法判断]
-邮箱：[邮箱地址 / 未提供]
-小红书链接：[链接]
-```
+支持的输入方式包括：已有 Bitable 链接、`app_token + table_id`、Feishu `App ID / App Secret`。  
+当前更稳的路径是：**复用已有表**，或**在已有 base 下新建一张表再写入**。
 
-或：
+如果缺少 Feishu API 凭证，需要先提醒用户提供。
 
-```text
-[公司名称] - [岗位名称]
-一句话概括：[直接概括这个岗位在招什么]
-关键词：[关键词1 / 关键词2 / 关键词3]
-城市：[城市名 / 国家名 / Remote / 未明确]
-Refer：[可 refer / 未明确 / 无法判断]
-邮箱：[邮箱地址 / 未提供]
-LinkedIn 链接：[链接]
-```
+## Dedup Logic | 去重逻辑 🧹
 
-## 可选 doc 产出
+**Exact-link only**  
+**只按完全相同的链接去重**
 
-默认不产出 doc。
+不做 `company + role + city` 这类模糊去重，避免误伤。
 
-如果用户明确要求，可以把结果整理成：
+## Why It’s Useful | 这个 skill 的优点 💡
 
-- Google Doc
-- Feishu Doc
-- 本地文件
+**Real hiring signals, fixed fields, clean flow**  
+**真实招聘线索，固定字段，流程清晰**
 
-规则很简单：
+它能拿到小红书里的真实招聘线索，输出字段固定，后面继续筛选很方便。  
+整体流程也比较清楚，不容易乱跑。
 
-- 用户说 Google Doc，就走 Google Doc
-- 用户说 Feishu，就走 Feishu Doc
-- 用户说保存到本地，就按用户给的路径保存
-- 用户没说，就只返回对话里的结构化结果
 
-## 去重
 
-- 只按完全相同的链接去重
-- 小红书链接和 LinkedIn 链接都可以用
-- 不用 `company + role + city` 这种文字相似度去重，避免误伤
 
-保存位置：
 
-- 走 OpenClaw API 时，默认存 OpenClaw memory
-- 不走 OpenClaw memory 时，需要用户给保存路径
-- 两者都没有，就只能当前轮内去重
-
-## 这个 skill 的优点
-
-- 能拿到小红书里的内推和团队直招线索 ✨
-- 也能补上 LinkedIn 的 JD 链接
-- 输出字段固定，后面继续筛选很方便
-- 触发边界比较清楚，不容易乱跑
-
-## 目录
-
-```text
-.
-├── SKILL.md
-├── README.md
-├── agents/
-├── references/
-└── scripts/
-```
-
-细规则看 [SKILL.md](./SKILL.md)，示例看 [examples.md](./references/examples.md)。

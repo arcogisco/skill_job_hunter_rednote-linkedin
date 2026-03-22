@@ -313,11 +313,98 @@ Expected behavior:
 - trigger this skill
 - return the final answer in English
 
+## Keyword Intake Examples
+
+These examples show how to handle users who do not format keywords as tags.
+
+### Example 18
+
+User:
+
+`帮我看看北京外企的 AI 产品经理机会，最好 junior 一点。`
+
+Why this is useful:
+
+- the user did not provide `/`-joined tags
+- the input is still specific enough to extract role, city, company type, and seniority signals
+
+Expected behavior:
+
+- do not ask the user to reformat into keyword tags
+- extract compact tags such as `AI 产品经理 / 外企 / 北京 / Junior`
+- keep the final output keyword field normalized with `/`
+
+### Example 19
+
+User:
+
+`AI产品经理 外企 北京`
+
+Why this is useful:
+
+- input is space-separated instead of `/`-joined
+- still contains clear role, company type, and city hints
+
+Expected behavior:
+
+- parse the space-separated input directly
+- normalize it into compact keyword tags before search and output
+
+### Example 20
+
+User:
+
+`ai pm；tech；junior`
+
+Why this is useful:
+
+- input uses Chinese semicolons and English abbreviations
+- the user intent is still easy to interpret
+
+Expected behavior:
+
+- accept `；` as a valid separator
+- keep compact tags such as `AI PM / Tech / Junior`
+- do not ask the user to rewrite the input unless core fields are still missing
+
+### Example 21
+
+User:
+
+`找新加坡做企业服务 AI agent 的产品经理，最好 3 年左右经验。`
+
+Why this is useful:
+
+- the user gave one natural-language sentence, not explicit tags
+- it still contains enough signals to extract role direction, market, track, and seniority
+
+Expected behavior:
+
+- infer tags such as `AI Agent / 企业服务 / 新加坡 / 1-3 年`
+- search directly after extraction
+- keep the final keyword field standardized with `/`
+
+### Example 22
+
+User:
+
+`我想找 tech 的 pm。`
+
+Why this still needs a follow-up:
+
+- input is short and easy to parse, but the role direction is still too broad
+- `tech` and `pm` alone are not enough for high-quality matching
+
+Expected response:
+
+- do not ask the user to reformat the keywords
+- instead ask the user to narrow the role direction, for example `AI PM`, `Growth PM`, `Monetization PM`, `Platform PM`
+
 ## Cache Reuse Example
 
 This is the desired reuse behavior.
 
-### Example 18
+### Example 23
 
 Situation:
 
@@ -331,7 +418,7 @@ Expected behavior:
 - keep the stronger combined result with both links
 - refresh `last_seen_at`
 
-### Example 19
+### Example 24
 
 Situation:
 
@@ -342,6 +429,21 @@ Expected behavior:
 
 - do not deduplicate them just because the text looks similar
 - keep them as separate jobs unless the exact same source link appears
+
+## Xiaohongshu Link Quality Example
+
+### Example 25
+
+Situation:
+
+- a Xiaohongshu result only has a bare web link like `https://www.xiaohongshu.com/explore/<note_id>`
+- the signed parameters required for browser access are missing
+
+Expected behavior:
+
+- do not present that URL as a high-quality direct post link
+- prefer the real signed link captured from the session or share flow
+- if a reliable direct link is unavailable, omit the Xiaohongshu link line instead of fabricating parameters
 
 ## Good Final Output Example
 

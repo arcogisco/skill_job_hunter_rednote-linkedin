@@ -44,6 +44,7 @@ Load extra references only when needed:
 - use [output-format.md](./references/output-format.md) right before drafting the final answer
 - use [cache-policy.md](./references/cache-policy.md) when deciding whether to reuse or update an existing result
 - use [examples.md](./references/examples.md) when deciding whether a request should trigger this skill and what a good final answer looks like
+- use [feishu-bitable.md](./references/feishu-bitable.md) when the user explicitly asks to sync results into Feishu Bitable
 
 If normalization, deduplication, or persistence becomes repetitive, use the helper scripts in `scripts/` instead of re-implementing the logic.
 
@@ -383,6 +384,48 @@ Optional delivery rule:
 - If the user explicitly asks for a doc deliverable, also package the same result into the requested destination.
 - Supported destinations are Google Doc, Feishu Doc, or a local file path provided by the user.
 - If the user asks for local output but does not provide a path, ask for the save path before writing.
+- If the user explicitly asks for Feishu Bitable output, write to Feishu Bitable instead of Feishu Doc.
+
+Feishu Bitable default target:
+
+- Current preferred path: write into an existing Feishu Bitable
+- Default base name: `job_hunter_rednote-linkedin`
+- Default table name: `Jobs`
+- If the default base and table already exist, reuse them
+- If the user provides an existing Bitable link, parse it into `app_token` and `table_id` and prefer that existing target
+- If the user does not provide a link, `app_token` and `table_id` are also acceptable
+- If the user specifies a different base or table, follow the user's instruction
+- Treat auto-creating a brand new Bitable as a secondary path rather than the primary flow
+- Whether the table is reused or newly created, always return the Feishu Bitable link in the final result
+- If Feishu Bitable output is requested but Feishu API credentials are unavailable, tell the user that `FEISHU_APP_ID` and `FEISHU_APP_SECRET` are required for the Feishu integration
+
+Feishu Bitable default fields:
+
+- `公司名称`
+- `岗位名称`
+- `一句话概括`
+- `关键词`
+- `城市`
+- `Refer`
+- `邮箱`
+- `小红书链接`
+- `LinkedIn 链接`
+- `来源`
+- `搜索批次ID`
+
+Feishu Bitable write rules:
+
+- Only write results that have at least one reliable source link
+- `来源` should be `小红书`, `LinkedIn`, or `小红书+LinkedIn`
+- Use exact-link dedupe only
+- If the same exact source link already exists, update the record instead of creating a duplicate
+- If neither a reliable Xiaohongshu link nor a LinkedIn link exists, do not write the result into Bitable
+- `关键词` should be written as a multi-select field in Bitable
+- Split `关键词` by `/` and write each trimmed token as one option
+- `城市` should be written as a multi-select field in Bitable
+- If multiple cities are present, split them by `/` and write each trimmed token as one option
+- Do not infer extra cities beyond what is explicitly present in the result
+- If the table contains Feishu's default blank placeholder rows, reuse those rows before appending new ones
 
 For each result, use this base shape:
 
@@ -406,7 +449,12 @@ Link rule:
 Field rules:
 
 - `一句话概括` should say what the role is hiring for and mention any notable mismatch if needed.
-- `关键词` should summarize the direction, such as `AI Agent / LLM / Growth / B2B SaaS`.
+- `关键词` should be `3-5` short tags joined by `/`.
+- Each keyword should be a concise direction, domain, product type, or hiring focus, such as `AI Agent / LLM / Growth / B2B SaaS`.
+- Prefer short noun phrases or proper nouns, not full sentences.
+- The user does not need to input keywords in `/` format.
+- Accept natural-language phrases or loose separators such as spaces, Chinese commas, English commas, semicolons, Chinese semicolons, or `|`.
+- Normalize extracted keywords into `/`-joined tags before output and before writing to Feishu Bitable.
 - `Refer` can only be `可 refer` when explicitly stated in the source.
 - `邮箱` can only be filled when explicitly present in the post or JD.
 

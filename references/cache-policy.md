@@ -34,6 +34,15 @@ Store:
 
 Do not use text-only fields such as `company + role + city` for persistent dedupe, because they can cause false merges.
 
+## Feishu Bitable Dedupe
+
+If writing to Feishu Bitable:
+
+- if `小红书链接` exists, use `xhs:<完整链接>` as the internal dedupe key
+- else if `LinkedIn 链接` exists, use `li:<完整链接>` as the internal dedupe key
+- if neither exists, do not write that result into Bitable
+- do not require a visible `去重键` column in the Bitable itself
+
 ## Update Rules
 
 If a cached result already exists:

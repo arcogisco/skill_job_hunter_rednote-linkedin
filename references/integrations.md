@@ -22,6 +22,9 @@ How to use it in this orchestrator:
 - Prefer Chinese queries unless the user clearly wants English-speaking content.
 - Search for `招聘`, `内推`, `refer`, team hiring clues, city clues, and email clues.
 - Reuse its behavior of preferring direct, navigable post links over vague mentions.
+- Treat signed Xiaohongshu links as higher quality than bare note-ID URLs.
+- Do not output an `explore/` web link as a reliable direct link if it is missing the signature parameters required by the current web flow.
+- Do not fabricate `xsec_token`, `xsec_source`, or any other anti-abuse parameters.
 
 ## LinkedIn Side
 
@@ -66,6 +69,7 @@ For duplicate avoidance and search-efficiency:
 
 - prefer saving normalized results into the OpenClaw memory backend when this skill is invoked through the OpenClaw API
 - if the user provides a custom save path, that overrides the default memory location
-- keep enough structured fields to match by link first, then by normalized company, role, and city
+- use exact-link matching only for persistent dedupe
+- do not fall back to normalized company, role, or city text matching for persistent dedupe
 
 If the LinkedIn side is unavailable or low confidence, still return useful Xiaohongshu-only leads and clearly mark LinkedIn as missing.

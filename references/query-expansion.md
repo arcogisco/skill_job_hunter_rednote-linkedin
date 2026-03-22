@@ -2,6 +2,23 @@
 
 Use semantic expansion before any source search.
 
+## Keyword Intake
+
+The user does not need to provide perfectly formatted keyword tags.
+
+Accept all of these as valid input styles:
+
+- natural-language phrases such as `找北京外企 AI 产品经理`
+- space-separated text such as `AI产品经理 外企 北京`
+- mixed punctuation such as `ai pm；tech；junior`
+- other loose separators such as `|`, `,`, `，`, `、`
+
+Before expansion:
+
+- extract the role, company type, city, seniority, and domain signals from the user's wording
+- normalize them into compact keyword tags
+- use `/` as the final normalized separator in output and Feishu storage
+
 ## Company Type Expansion
 
 - 外企 -> `外资企业`, `跨国公司`, `MNC`, `foreign company`, `international company`, `global company`

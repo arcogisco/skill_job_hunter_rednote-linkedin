@@ -1,0 +1,46 @@
+[
+  {
+    "company_name": "Anthropic",
+    "role_name": "Product Manager, AI Platform",
+    "summary": "这个岗位在招面向 AI 平台能力建设的产品经理，偏开发者生态。",
+    "keywords": "AI Agent / LLM / Developer Product",
+    "city": "San Francisco / Remote",
+    "refer": "未明确",
+    "email": "",
+    "xiaohongshu_link": "",
+    "linkedin_link": "https://www.linkedin.com/jobs/view/example-anthropic-1"
+  },
+  {
+    "company_name": "OpenAI",
+    "role_name": "Growth Product Manager",
+    "summary": "这个岗位偏增长和商业化。",
+    "keywords": "Growth / Monetization / AI",
+    "city": "San Francisco",
+    "refer": "可 refer",
+    "email": "",
+    "xiaohongshu_link": "https://www.xiaohongshu.com/explore/example-openai?xsec_token=demo_token&xsec_source=pc_search",
+    "linkedin_link": ""
+  },
+  {
+    "company_name": "OpenAI",
+    "role_name": "Growth Product Manager",
+    "summary": "这个岗位偏增长和商业化，信息比之前更完整。",
+    "keywords": "Growth / Monetization / AI / B2B SaaS",
+    "city": "San Francisco / Remote",
+    "refer": "可 refer",
+    "email": "jobs@example.com",
+    "xiaohongshu_link": "https://www.xiaohongshu.com/explore/example-openai?xsec_token=demo_token&xsec_source=pc_search",
+    "linkedin_link": "https://www.linkedin.com/jobs/view/example-openai-1"
+  },
+  {
+    "company_name": "No Link Inc",
+    "role_name": "AI PM",
+    "summary": "没有可靠链接，不应该写入 Bitable。",
+    "keywords": "AI / PM",
+    "city": "Shanghai",
+    "refer": "未明确",
+    "email": "",
+    "xiaohongshu_link": "",
+    "linkedin_link": ""
+  }
+]
