@@ -1,0 +1,7 @@
+interface:
+  display_name: "XHS LinkedIn Job Search"
+  short_description: "Xiaohongshu first, LinkedIn second job search."
+  default_prompt: "Use $xhs-linkedin-job-search, or just say job-search, to search Xiaohongshu for hiring posts first, then LinkedIn for JD links, and return a structured shortlist in Chinese by default."
+
+policy:
+  allow_implicit_invocation: false
