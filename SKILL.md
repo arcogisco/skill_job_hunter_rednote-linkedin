@@ -223,6 +223,13 @@ For every useful result, extract if available:
 - email
 - direct Xiaohongshu post link
 
+Important Xiaohongshu link rule:
+
+- Prefer a directly navigable Xiaohongshu note URL captured from the real session or share flow.
+- For web `explore/` note links, treat missing `xsec_token` as a serious quality problem.
+- If the link does not contain the required signature parameters needed for reliable web access, do not treat it as a high-quality direct link.
+- Never invent, synthesize, or guess `xsec_token` or similar signature parameters.
+
 ## Step 4: LinkedIn Search Second
 
 Only after Xiaohongshu search is complete, search LinkedIn.
@@ -369,6 +376,13 @@ Do not output a generic summary instead of jobs.
 Return a structured job list only.
 
 Use [output-format.md](./references/output-format.md) to keep the final output shape consistent.
+
+Optional delivery rule:
+
+- By default, return the structured result directly in chat only.
+- If the user explicitly asks for a doc deliverable, also package the same result into the requested destination.
+- Supported destinations are Google Doc, Feishu Doc, or a local file path provided by the user.
+- If the user asks for local output but does not provide a path, ask for the save path before writing.
 
 For each result, use this base shape:
 
